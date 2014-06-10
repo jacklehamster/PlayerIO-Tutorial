@@ -1,6 +1,7 @@
 package
 {
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	
@@ -10,12 +11,14 @@ package
 	import playerio.PlayerIO;
 	import playerio.PlayerIOError;
 	
-	public class PlayerIOTutorial extends Sprite
+	public class Tutorial extends Sprite
 	{
 		private var connection:Connection, client:Client;
+		private var roomName:String;
 		
-		public function PlayerIOTutorial()
+		public function Tutorial(roomName:String="Paris")
 		{
+			this.roomName = roomName;
 			var username:String = "user"+Math.random();
 			var game_id:String = "dobukiland-ymhkxklve0qg9ksunqrsq";
 			
@@ -30,6 +33,10 @@ package
 				handleError							//Function executed if we recive an error
 			);
 			
+			addEventListener(Event.ADDED_TO_STAGE,onStage);
+		}
+		
+		private function onStage(e:Event):void {
 			stage.addEventListener(MouseEvent.CLICK,
 				function(e:MouseEvent):void {
 					send("Hello, World");
@@ -42,9 +49,8 @@ package
 		
 		private function handleConnect(client:Client):void {
 			log("Successfully connected to Yahoo Games Network");
-			var roomName:String = "Paris";
 			var roomType:String = "bounce";
-			client.multiplayer.createJoinRoom(roomName,roomType,true,{},{},onJoin,handleError);
+			client.multiplayer.createJoinRoom(roomName,roomType,true,{game:"Tutorial"},{},onJoin,handleError);
 		}
 		
 		private function onJoin(connection:Connection):void {
